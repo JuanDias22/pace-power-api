@@ -53,13 +53,21 @@ public class PaymentsController : ControllerBase
 
         var body = new
         {
-            transaction_amount = valor,
-            description = plano,
-            payment_method_id = "pix",
+            items = new[]
+            {
+                new
+                {
+                    title = $"Plano {plano}",
+                    quantity = 1,
+                    currency_id = "BRL",
+                    unit_price = valor
+                }
+            },
             payer = new
             {
                 email = request.Email
-            }
+            },
+            notification_url = _config["MercadoPago:WebhookUrl"]
         };
 
         var json = JsonSerializer.Serialize(body);
