@@ -11,8 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<LeadService>();
 builder.Services.AddScoped<PaymentsRepository>();
+builder.Services.AddScoped<UserRepository>();
 
-builder.Services.AddHttpClient();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
