@@ -47,9 +47,7 @@ public class PaymentsController : ControllerBase
         };
 
         if (valor == 0)
-        {
             return BadRequest(new { erro = "Plano inválido" });
-        }
 
         var body = new
         {
@@ -71,7 +69,6 @@ public class PaymentsController : ControllerBase
         };
 
         var json = JsonSerializer.Serialize(body);
-
         var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
         _httpClient.DefaultRequestHeaders.Clear();
@@ -83,9 +80,6 @@ public class PaymentsController : ControllerBase
         );
 
         var responseContent = await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine("Retorno Mercado Pago:");
-        Console.WriteLine(responseContent);
 
         if (!response.IsSuccessStatusCode)
         {
