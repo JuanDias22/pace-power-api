@@ -172,10 +172,20 @@ public class PaymentsController : ControllerBase
                 return StatusCode((int)response.StatusCode);
         }
 
-        var url = initPoint.GetString();
+            var content = await response.Content.ReadAsStringAsync();
+            var pagamento = JsonSerializer.Deserialize<JsonElement>(content);
 
-        return Ok(new { url });
+            var status = pagamento.GetProperty("status").GetString();
+            var email = pagamento.GetProperty("payer").GetProperty("email").GetString();
+
+            var registro = await _paymentRepository.ObterIdMercadoPagoAsync(idPagamento);
+
+            if (registro == null)
+            {
+                _logger.LogWarning("Pagamento não encontrado no banco. Id: {Id}", idPagamento);
+                return NotFound();
     }
+            var plano = registro.Plano;
 }
 
 public class PaymentRequest
