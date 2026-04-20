@@ -8,7 +8,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
-
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<LeadService>();
 
 builder.Services.AddHttpClient();
