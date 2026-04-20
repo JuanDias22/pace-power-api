@@ -10,6 +10,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<LeadService>();
+builder.Services.AddScoped<PaymentsRepository>();
 
 builder.Services.AddHttpClient();
 
