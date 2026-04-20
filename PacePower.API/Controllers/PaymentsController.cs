@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Numerics;
+using Microsoft.Extensions.Logging;
+using PacePower.API.Controllers;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
 
@@ -10,10 +11,17 @@ public class PaymentsController : ControllerBase
 {
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _config;
-    public PaymentsController(HttpClient httpClient, IConfiguration config)
+    private readonly PaymentsRepository _paymentRepository;
+    private readonly UserRepository _userRepository;
+    private readonly ILogger<PaymentsController> _logger;
+
+    public PaymentsController(HttpClient httpClient, IConfiguration config, PaymentsRepository paymentRepository, UserRepository userRepository, ILogger<PaymentsController> logger)
     {
         _httpClient = httpClient;
         _config = config;
+        _paymentRepository = paymentRepository;
+        _userRepository = userRepository;
+        _logger = logger;
     }
 
 
