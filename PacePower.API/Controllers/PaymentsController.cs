@@ -186,9 +186,20 @@ public class PaymentsController : ControllerBase
                 return NotFound();
     }
             var plano = registro.Plano;
+
+            switch (status)
+            {
+                case "approved":
+                    await _paymentRepository.AtualizarStatusAsync(idPagamento, "approved");
+                    await _userRepository.AtualizarPlanosAsync(email, plano);
+                    break;
+
+                case "rejected":
+                    await _paymentRepository.AtualizarStatusAsync(idPagamento, "rejected");
+                    break;
 }
 
-public class PaymentRequest
+            return Ok();
 {
     public string Plano { get; set; }
     public string Nome { get; set; }
