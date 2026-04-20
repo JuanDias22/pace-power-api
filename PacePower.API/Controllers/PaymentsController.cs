@@ -127,11 +127,49 @@ public class PaymentsController : ControllerBase
             return BadRequest(new { erro = "Body vazio" });
 
         JsonElement json;
+
+        try
+        {
+            json = JsonSerializer.Deserialize<JsonElement>(body);
     }
+        catch (JsonException ex)
             {
-                erro = "Resposta inválida do Mercado Pago",
-                detalhe = responseContent
-            });
+            _logger.LogWarning(ex, "JSON inválido recebido no webhook");
+            return BadRequest(new { erro = "JSON inválido" });
+        }
+
+        if (!json.TryGetProperty("data", out var data) ||
+            !data.TryGetProperty("id", out var idProp))
+        {
+            return BadRequest(new { erro = "Payload inválido" });
+        }
+
+        var idPagamento = idProp.GetString();
+
+        if (string.IsNullOrEmpty(idPagamento))
+            return BadRequest(new { erro = "ID do pagamento inválido" });
+
+        try
+        {
+            var accessToken = _config["MercadoPago:AccessToken"];
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                _logger.LogError("AccessToken não configurado");
+                return StatusCode(500, new { erro = "Configuração inválida" });
+            }
+
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+
+            var response = await _httpClient.GetAsync(
+                $"https://api.mercadopago.com/v1/payments/{idPagamento}"
+            );
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("Erro ao consultar pagamento no Mercado Pago. Status: {StatusCode}", response.StatusCode);
+                return StatusCode((int)response.StatusCode);
         }
 
         var url = initPoint.GetString();
