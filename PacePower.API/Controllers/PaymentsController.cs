@@ -111,7 +111,7 @@ public class PaymentsController : ControllerBase
 
     [HttpPost("webhook")]
     public async Task<IActionResult> Webhook()
-        {
+    {
         string body;
 
         using (var reader = new StreamReader(Request.Body))
@@ -125,9 +125,9 @@ public class PaymentsController : ControllerBase
         try
         {
             json = JsonSerializer.Deserialize<JsonElement>(body);
-    }
+        }
         catch (JsonException ex)
-            {
+        {
             _logger.LogWarning(ex, "JSON inválido recebido no webhook");
             return BadRequest(new { erro = "JSON inválido" });
         }
@@ -164,7 +164,7 @@ public class PaymentsController : ControllerBase
             {
                 _logger.LogWarning("Erro ao consultar pagamento no Mercado Pago. Status: {StatusCode}", response.StatusCode);
                 return StatusCode((int)response.StatusCode);
-        }
+            }
 
             var content = await response.Content.ReadAsStringAsync();
             var pagamento = JsonSerializer.Deserialize<JsonElement>(content);
@@ -178,7 +178,7 @@ public class PaymentsController : ControllerBase
             {
                 _logger.LogWarning("Pagamento não encontrado no banco. Id: {Id}", idPagamento);
                 return NotFound();
-    }
+            }
             var plano = registro.Plano;
 
             switch (status)
@@ -191,12 +191,12 @@ public class PaymentsController : ControllerBase
                 case "rejected":
                     await _paymentRepository.AtualizarStatusAsync(idPagamento, "rejected");
                     break;
-}
+            }
 
             return Ok();
         }
         catch (HttpRequestException ex)
-{
+        {
             _logger.LogError(ex, "Erro HTTP ao consultar Mercado Pago");
             return StatusCode(502, new { erro = "Erro externo (Mercado Pago)" });
         }
