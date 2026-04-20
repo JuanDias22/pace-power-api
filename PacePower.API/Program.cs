@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PacePower.API.Application.Services;
+using PacePower.API.Controllers;
 using PacePower.API.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,8 +31,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
