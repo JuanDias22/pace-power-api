@@ -200,8 +200,16 @@ public class PaymentsController : ControllerBase
 }
 
             return Ok();
+        }
+        catch (HttpRequestException ex)
 {
-    public string Plano { get; set; }
-    public string Nome { get; set; }
-    public string Email { get; set; }
+            _logger.LogError(ex, "Erro HTTP ao consultar Mercado Pago");
+            return StatusCode(502, new { erro = "Erro externo (Mercado Pago)" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado no webhook");
+            return StatusCode(500, new { erro = "Erro interno" });
+        }
+    }
 }
