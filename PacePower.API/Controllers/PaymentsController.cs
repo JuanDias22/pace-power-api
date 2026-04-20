@@ -114,8 +114,19 @@ public class PaymentsController : ControllerBase
             url = initPoint
         });
     }
+
+    [HttpPost("webhook")]
+    public async Task<IActionResult> Webhook()
         {
-            return BadRequest(new
+        string body;
+
+        using (var reader = new StreamReader(Request.Body))
+            body = await reader.ReadToEndAsync();
+
+        if (string.IsNullOrWhiteSpace(body))
+            return BadRequest(new { erro = "Body vazio" });
+
+        JsonElement json;
     }
             {
                 erro = "Resposta inválida do Mercado Pago",
