@@ -26,19 +26,23 @@ public class PaymentsController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> CreatePayment([FromBody] PaymentRequest request)
+    public async Task<IActionResult> CriarPagamento([FromBody] PaymentsRequest request)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var accessToken = _config["MercadoPago:AccessToken"];
 
-        Console.WriteLine($"Plano recebido: {request.Plano}");
+        if (string.IsNullOrEmpty(accessToken))
+            return StatusCode(500, new { erro = "Access Token não configurado" });
 
-        var plano = request.Plano?.Replace("á", "a");
+        var plano = request.Plano?.Trim().ToLower();
 
         var valor = plano switch
         {
-            "Basico" => 79,
-            "Intermediario" => 119,
-            "Premium" => 149,
+            "basico" => 79,
+            "intermediario" => 119,
+            "premium" => 149,
             _ => 0
         };
 
@@ -77,7 +81,7 @@ public class PaymentsController : ControllerBase
 
         if (!response.IsSuccessStatusCode)
         {
-            return BadRequest(new
+            return StatusCode((int)response.StatusCode, new
             {
                 erro = "Erro ao criar pagamento",
                 detalhe = responseContent
@@ -86,9 +90,25 @@ public class PaymentsController : ControllerBase
 
         var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
 
-        if (!result.TryGetProperty("init_point", out var initPoint))
+        var preferenceId = result.GetProperty("id").GetString();
+        var initPoint = result.GetProperty("init_point").GetString();
+
+        await _paymentRepository.CreateAsync(
+            request.Email,
+            plano,
+            valor,
+            "pendente",
+            preferenceId
+        );
+
+        return Ok(new
+        {
+            url = initPoint
+        });
+    }
         {
             return BadRequest(new
+    }
             {
                 erro = "Resposta inválida do Mercado Pago",
                 detalhe = responseContent
