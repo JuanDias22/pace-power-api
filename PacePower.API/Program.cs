@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var allowedOrigins = new[]
 {
+    "https://pace-power-landing-page-3ih0x8wu8-juandias22s-projects.vercel.app",
     "https://pace-power-landing-page.vercel.app"
 };
 
@@ -14,14 +15,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
@@ -34,7 +37,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
