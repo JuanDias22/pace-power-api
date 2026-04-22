@@ -1,4 +1,6 @@
+using MercadoPago;
 using Microsoft.EntityFrameworkCore;
+using PacePower.API.Domain.Entities;
 
 namespace PacePower.API.Infrastructure.Data
 {
@@ -10,5 +12,6 @@ namespace PacePower.API.Infrastructure.Data
         }
 
         public DbSet<Lead> Leads { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }
