@@ -22,6 +22,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+
+Console.WriteLine("CONNECTION STRING:");
+Console.WriteLine(conn ?? "NULLLLLLLLLL");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
