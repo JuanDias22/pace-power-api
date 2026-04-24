@@ -12,8 +12,8 @@ using PacePower.API.Infrastructure.Data;
 namespace PacePower.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260422174015_UpdatePaymentFields")]
-    partial class UpdatePaymentFields
+    [Migration("20260424233318_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
