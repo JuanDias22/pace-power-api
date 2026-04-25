@@ -22,9 +22,9 @@
             using var conn = GetConnection();
 
             var sql = @"
-            INSERT INTO usuarios (nome, email, senha_hash)
-            VALUES (@Nome, @Email, @SenhaHash);
-        ";
+        INSERT INTO ""Users"" (""Nome"", ""Email"", ""SenhaHash"", ""CreatedAt"", ""UpdatedAt"")
+        VALUES (@Nome, @Email, @SenhaHash, NOW(), NOW());
+    ";
 
             await conn.ExecuteAsync(sql, new
             {
@@ -39,17 +39,18 @@
             using var conn = GetConnection();
 
             var sql = @"
-            UPDATE usuarios
-            SET plano = @Plano,
-                updated_at = NOW()
-            WHERE email = @Email;
-        ";
+        UPDATE ""Users""
+        SET ""Plano"" = @Plano,
+            ""UpdatedAt"" = NOW()
+        WHERE ""Email"" = @Email;
+    ";
 
             await conn.ExecuteAsync(sql, new
             {
                 Plano = plano,
                 Email = email
             });
+        
         }
     }
 }
