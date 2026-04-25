@@ -24,11 +24,17 @@ builder.Services.AddCors(options =>
 
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 
-Console.WriteLine("CONNECTION STRING:");
-Console.WriteLine(conn ?? "NULL");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(conn));
+    options.UseNpgsql(conn, o =>
+    {
+        o.CommandTimeout(60);
+
+        o.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null
+        );
+    }));
 
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
@@ -48,7 +54,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    //db.Database.Migrate();
 }
 
 app.UseHttpsRedirection();
