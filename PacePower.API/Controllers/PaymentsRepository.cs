@@ -24,9 +24,10 @@ public class PaymentsRepository
         using var conn = GetConnection();
 
         var sql = @"
-            INSERT INTO pagamentos (email, plano, valor, status, mercado_pago_id)
-            VALUES (@Email, @Plano, @Valor, @Status, @MercadoPagoId)
-            RETURNING id;
+            INSERT INTO ""Payments""
+            (""Email"", ""Plano"", ""Valor"", ""Status"", ""MercadoPagoId"", ""CreatedAt"", ""UpdatedAt"")
+            VALUES (@Email, @Plano, @Valor, @Status, @MercadoPagoId, NOW(), NOW())
+            RETURNING ""Id"";
         ";
 
         return await conn.ExecuteScalarAsync<int>(sql, new
@@ -44,10 +45,10 @@ public class PaymentsRepository
         using var conn = GetConnection();
 
         var sql = @"
-            UPDATE pagamentos
-            SET status = @Status,
-                updated_at = NOW()
-            WHERE mercado_pago_id = @MercadoPagoId;
+            UPDATE ""Payments""
+            SET ""Status"" = @Status,
+                ""UpdatedAt"" = NOW()
+            WHERE ""MercadoPagoId"" = @MercadoPagoId;
         ";
 
         await conn.ExecuteAsync(sql, new
@@ -62,9 +63,9 @@ public class PaymentsRepository
         using var conn = GetConnection();
 
         var sql = @"
-            SELECT email, plano, valor, status, mercado_pago_id
-            FROM pagamentos
-            WHERE mercado_pago_id = @Id
+            SELECT ""Email"", ""Plano"", ""Valor"", ""Status"", ""MercadoPagoId""
+            FROM ""Payments""
+            WHERE ""MercadoPagoId"" = @Id
             LIMIT 1;
         ";
 
